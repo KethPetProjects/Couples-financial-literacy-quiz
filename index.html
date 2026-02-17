@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Couples Financial Sync Quiz 💑💰</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B9D;
+            --secondary: #FFA500;
+            --accent: #4ECDC4;
+            --purple: #9B59B6;
+            --success: #2ECC71;
+            --warning: #F39C12;
+            --danger: #E74C3C;
+            --text: #2C3E50;
+            --light-bg: #FFF5F7;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #FFF5F7 0%, #E8F5E9 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Floating decorative elements */
+        .floating-emoji {
+            position: fixed;
+            font-size: 3rem;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        .emoji-1 { top: 10%; left: 10%; animation-delay: 0s; }
+        .emoji-2 { top: 20%; right: 15%; animation-delay: 1s; }
+        .emoji-3 { bottom: 15%; left: 20%; animation-delay: 2s; }
+        .emoji-4 { bottom: 10%; right: 10%; animation-delay: 3s; }
+
+        /* Screen container */
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+            position: relative;
+            z-index: 1;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Screen */
+        .welcome-card {
+            background: var(--white);
+            border-radius: 30px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(255, 107, 157, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::before {
+            content: '💑';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            font-size: 150px;
+            opacity: 0.05;
+        }
+
+        h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .emoji-header {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: #555;
+        }
+
+        .feature-list {
+            text-align: left;
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 0;
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 0.75rem 0;
+            padding-left: 2.5rem;
+            position: relative;
+            font-size: 1.05rem;
+        }
+
+        .feature-list li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+            font-size: 1.3rem;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Input Form */
+        .input-card {
+            background: var(--white);
+            border-radius: 30px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(78, 205, 196, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 1rem;
+            border: 3px solid #E8E8E8;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(78, 205, 196, 0.1);
+        }
+
+        /* Question Card */
+        .question-card {
+            background: var(--white);
+            border-radius: 30px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(155, 89, 182, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #E8E8E8;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--purple));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: var(--purple);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .question-note {
+            font-size: 0.95rem;
+            color: #777;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #F8F9FA;
+            border-radius: 10px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option {
+            padding: 1.25rem 1.5rem;
+            border: 3px solid #E8E8E8;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.05rem;
+            background: var(--white);
+        }
+
+        .option:hover {
+            border-color: var(--accent);
+            background: rgba(78, 205, 196, 0.05);
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.1), rgba(255, 165, 0, 0.1));
+            font-weight: 600;
+        }
+
+        /* Transition Screen */
+        .transition-card {
+            background: var(--white);
+            border-radius: 30px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(255, 165, 0, 0.2);
+        }
+
+        .big-emoji {
+            font-size: 6rem;
+            margin-bottom: 1rem;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Results Screen */
+        .results-card {
+            background: var(--white);
+            border-radius: 30px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(46, 204, 113, 0.2);
+        }
+
+        .score-display {
+            text-align: center;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), rgba(155, 89, 182, 0.1));
+            border-radius: 20px;
+        }
+
+        .score-number {
+            font-size: 4rem;
+            font-weight: 700;
+            font-family: 'Fredoka', sans-serif;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-label {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .comparison-chart {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: #F8F9FA;
+            border-radius: 20px;
+        }
+
+        .chart-bar {
+            margin: 1rem 0;
+        }
+
+        .chart-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .bar {
+            height: 40px;
+            background: #E8E8E8;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--accent));
+            border-radius: 10px;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            padding-left: 1rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .breakdown {
+            margin-top: 2rem;
+        }
+
+        .breakdown-item {
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breakdown-item.match {
+            background: rgba(46, 204, 113, 0.1);
+            border-left: 4px solid var(--success);
+        }
+
+        .breakdown-item.mismatch {
+            background: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid var(--danger);
+        }
+
+        .cta-section {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.1), rgba(255, 165, 0, 0.1));
+            border-radius: 20px;
+        }
+
+        .cta-section h3 {
+            font-family: 'Fredoka', sans-serif;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .next-steps {
+            list-style: none;
+            padding: 0;
+        }
+
+        .next-steps li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .next-steps li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        .reality-check {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #FFF9E6;
+            border-left: 4px solid var(--warning);
+            border-radius: 10px;
+        }
+
+        .reality-check strong {
+            color: var(--secondary);
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .welcome-card,
+            .input-card,
+            .question-card,
+            .results-card {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .emoji-header {
+                font-size: 3rem;
+            }
+
+            .big-emoji {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating decorative emojis -->
+    <div class="floating-emoji emoji-1">💰</div>
+    <div class="floating-emoji emoji-2">💑</div>
+    <div class="floating-emoji emoji-3">📊</div>
+    <div class="floating-emoji emoji-4">❤️</div>
+
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="screen active" id="welcome-screen">
+            <div class="welcome-card">
+                <span class="emoji-header">💑💰</span>
+                <h1>Are You and Your Partner Financially in Sync?</h1>
+                <p class="subtitle">Take the Couples Financial Literacy Quiz!</p>
+                <p class="intro-text">
+                    Money is one of the top sources of stress in relationships. But here's the good news: 
+                    simply talking about finances together can dramatically improve your alignment!
+                </p>
+                <ul class="feature-list">
+                    <li>10 fun questions for both partners</li>
+                    <li>See where you agree (and disagree!)</li>
+                    <li>Compare yourselves to average US couples</li>
+                    <li>Get personalized next steps</li>
+                    <li>No data saved - completely private!</li>
+                </ul>
+                <button class="btn" onclick="startQuiz()">Let's Get Started! 🚀</button>
+            </div>
+        </div>
+
+        <!-- Spouse 1 Input -->
+        <div class="screen" id="spouse1-input">
+            <div class="input-card">
+                <h2 style="font-family: 'Fredoka', sans-serif; color: var(--accent); margin-bottom: 1.5rem;">👤 Partner 1 - Let's start with you!</h2>
+                <div class="form-group">
+                    <label for="spouse1-name">Your Name</label>
+                    <input type="text" id="spouse1-name" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="spouse1-age">Your Age</label>
+                    <input type="number" id="spouse1-age" placeholder="Enter your age" min="18" max="100" required>
+                </div>
+                <button class="btn" onclick="startSpouse1Questions()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Questions Screen -->
+        <div class="screen" id="questions-screen">
+            <div class="question-card">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="question-number" id="question-number"></div>
+                <div class="question-text" id="question-text"></div>
+                <div class="question-note" id="question-note" style="display: none;"></div>
+                <div class="options" id="options"></div>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button class="btn" id="prev-btn" onclick="previousQuestion()" style="display: none; background: linear-gradient(135deg, #95A5A6, #7F8C8D);">← Previous</button>
+                <button class="btn" id="next-btn" onclick="nextQuestion()" style="display: none;">Next Question →</button>
+            </div>
+        </div>
+
+        <!-- Transition Screen -->
+        <div class="screen" id="transition-screen">
+            <div class="transition-card">
+                <div class="big-emoji">🔄</div>
+                <h2 style="font-family: 'Fredoka', sans-serif; color: var(--secondary); margin-bottom: 1rem;">
+                    Great job, <span id="spouse1-name-display"></span>!
+                </h2>
+                <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+                    Now it's time for Partner 2 to answer the same questions.
+                </p>
+                <p style="color: #777; margin-bottom: 2rem;">
+                    Pass the device to your partner, and let's see how aligned you are! 💕
+                </p>
+                <button class="btn" onclick="startSpouse2Input()">Partner 2, Ready? →</button>
+            </div>
+        </div>
+
+        <!-- Spouse 2 Input -->
+        <div class="screen" id="spouse2-input">
+            <div class="input-card">
+                <h2 style="font-family: 'Fredoka', sans-serif; color: var(--purple); margin-bottom: 1.5rem;">👤 Partner 2 - Your turn!</h2>
+                <div class="form-group">
+                    <label for="spouse2-name">Your Name</label>
+                    <input type="text" id="spouse2-name" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="spouse2-age">Your Age</label>
+                    <input type="number" id="spouse2-age" placeholder="Enter your age" min="18" max="100" required>
+                </div>
+                <button class="btn" onclick="startSpouse2Questions()">Let's Go! →</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="screen" id="results-screen">
+            <div class="results-card">
+                <h2 style="font-family: 'Fredoka', sans-serif; color: var(--success); text-align: center; margin-bottom: 2rem;">
+                    🎉 Your Results Are In!
+                </h2>
+                
+                <div class="score-display">
+                    <div class="score-number" id="final-score" style="color: var(--primary);"></div>
+                    <div class="score-label">Financial Alignment Score</div>
+                    <p style="margin-top: 1rem; color: #666;" id="score-interpretation"></p>
+                </div>
+
+                <div class="comparison-chart">
+                    <h3 style="font-family: 'Fredoka', sans-serif; margin-bottom: 1.5rem;">📊 How You Compare</h3>
+                    <div class="chart-bar">
+                        <div class="chart-label">
+                            <span id="couple-names">You</span>
+                            <span id="your-score-pct"></span>
+                        </div>
+                        <div class="bar">
+                            <div class="bar-fill" id="your-bar"></div>
+                        </div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="chart-label">
+                            <span>Average US Couple</span>
+                            <span>50%</span>
+                        </div>
+                        <div class="bar">
+                            <div class="bar-fill" style="width: 50%; background: linear-gradient(90deg, #95A5A6, #BDC3C7);">50%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="breakdown" id="breakdown"></div>
+
+                <div class="reality-check" id="reality-check" style="display: none;">
+                    <strong>💡 Reality Check:</strong> According to research, 68% of retirees receive little to no financial support from their children. Planning for financial independence in retirement is crucial.
+                </div>
+
+                <div class="cta-section" id="cta-section"></div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn" onclick="location.reload()">Take Quiz Again 🔄</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data
+        const questions = [
+            {
+                id: 1,
+                text: "What's your primary financial goal for the next 5 years?",
+                options: [
+                    "Saving for retirement",
+                    "Buying a house / upgrading home",
+                    "Kids' education fund",
+                    "Building emergency savings",
+                    "Paying off debt"
+                ]
+            },
+            {
+                id: 2,
+                text: "How much emergency savings should we have?",
+                options: [
+                    "3 months of expenses",
+                    "6 months of expenses",
+                    "12 months of expenses",
+                    "We don't need emergency savings"
+                ]
+            },
+            {
+                id: 3,
+                text: "What is our current household net worth?",
+                note: "Net Worth = Total Assets - Total Liabilities<br>Assets: Home equity, retirement accounts, savings, investments<br>Liabilities: Mortgage, car loans, credit card debt, student loans",
+                options: [
+                    "Under $0 (negative)",
+                    "$0 - $50,000",
+                    "$50,000 - $250,000",
+                    "$250,000 - $500,000",
+                    "Over $500,000"
+                ]
+            },
+            {
+                id: 4,
+                text: "What's the maximum we should spend on dining out per month?",
+                options: [
+                    "Under $200",
+                    "$200 - $500",
+                    "$500 - $1,000",
+                    "Over $1,000 / No limit"
+                ]
+            },
+            {
+                id: 5,
+                text: "Should we buy or lease our next car?",
+                options: [
+                    "Buy new",
+                    "Buy used",
+                    "Lease",
+                    "Keep current car longer / No preference"
+                ]
+            },
+            {
+                id: 6,
+                text: "How aggressive should our investments be?",
+                options: [
+                    "Very conservative (mostly bonds/cash)",
+                    "Moderately conservative (diversified assets, well balanced)",
+                    "Moderately aggressive (mostly stocks - like typical 401k)",
+                    "Very aggressive (high-growth stocks/crypto)"
+                ]
+            },
+            {
+                id: 7,
+                text: "Should we invest in rental real estate?",
+                options: [
+                    "Yes, it's a priority",
+                    "Maybe someday",
+                    "No, too risky/complicated",
+                    "We already do"
+                ]
+            },
+            {
+                id: 8,
+                text: "Should we prioritize paying off our mortgage or investing more?",
+                options: [
+                    "Pay off mortgage first",
+                    "Invest more",
+                    "Both equally",
+                    "Not sure / Rent currently"
+                ]
+            },
+            {
+                id: 9,
+                text: "Do you review and file your tax return together?",
+                options: [
+                    "Yes, we both review and understand it",
+                    "One spouse handles it, the other reviews",
+                    "One spouse handles it completely",
+                    "We hire someone and don't review much"
+                ]
+            },
+            {
+                id: 10,
+                text: "Are you expecting financial support from your children during retirement?",
+                options: [
+                    "Yes, significantly",
+                    "Somewhat / occasionally",
+                    "No, we'll be financially independent",
+                    "Haven't thought about it"
+                ],
+                isRetirementQuestion: true
+            }
+        ];
+
+        // State
+        let currentSpouse = 1;
+        let currentQuestion = 0;
+        let spouse1Data = { name: '', age: 0, answers: [] };
+        let spouse2Data = { name: '', age: 0, answers: [] };
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function startQuiz() {
+            showScreen('spouse1-input');
+        }
+
+        function startSpouse1Questions() {
+            const name = document.getElementById('spouse1-name').value.trim();
+            const age = document.getElementById('spouse1-age').value;
+            
+            if (!name || !age) {
+                alert('Please fill in all fields!');
+                return;
+            }
+
+            spouse1Data.name = name;
+            spouse1Data.age = parseInt(age);
+            currentSpouse = 1;
+            currentQuestion = 0;
+            showScreen('questions-screen');
+            displayQuestion();
+        }
+
+        function startSpouse2Input() {
+            showScreen('spouse2-input');
+        }
+
+        function startSpouse2Questions() {
+            const name = document.getElementById('spouse2-name').value.trim();
+            const age = document.getElementById('spouse2-age').value;
+            
+            if (!name || !age) {
+                alert('Please fill in all fields!');
+                return;
+            }
+
+            spouse2Data.name = name;
+            spouse2Data.age = parseInt(age);
+            currentSpouse = 2;
+            currentQuestion = 0;
+            showScreen('questions-screen');
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const question = questions[currentQuestion];
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('question-number').textContent = 
+                `Question ${currentQuestion + 1} of ${questions.length} • Partner ${currentSpouse}`;
+            document.getElementById('question-text').textContent = question.text;
+            
+            // Show note if exists
+            const noteEl = document.getElementById('question-note');
+            if (question.note) {
+                noteEl.innerHTML = question.note;
+                noteEl.style.display = 'block';
+            } else {
+                noteEl.style.display = 'none';
+            }
+
+            // Display options
+            const optionsEl = document.getElementById('options');
+            optionsEl.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'option';
+                optionEl.textContent = option;
+                optionEl.onclick = () => selectOption(index);
+                optionsEl.appendChild(optionEl);
+            });
+
+            // Hide Next button initially
+            document.getElementById('next-btn').style.display = 'none';
+            
+            // But show it if this question was already answered
+            const currentData = currentSpouse === 1 ? spouse1Data : spouse2Data;
+            if (currentData.answers[currentQuestion] !== undefined) {
+                const prevAnswer = currentData.answers[currentQuestion];
+                document.querySelectorAll('.option')[prevAnswer].classList.add('selected');
+                document.getElementById('next-btn').style.display = 'block';
+            }
+            
+            updateButtonVisibility();
+        }
+
+        function selectOption(index) {
+            // Remove previous selection
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selection
+            document.querySelectorAll('.option')[index].classList.add('selected');
+            
+            // Store answer
+            if (currentSpouse === 1) {
+                spouse1Data.answers[currentQuestion] = index;
+            } else {
+                spouse2Data.answers[currentQuestion] = index;
+            }
+
+            // Show next button
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+            }
+        }
+
+        function updateButtonVisibility() {
+            const prevBtn = document.getElementById('prev-btn');
+            
+            // Show Previous button only if not on first question
+            if (currentQuestion > 0) {
+                prevBtn.style.display = 'block';
+            } else {
+                prevBtn.style.display = 'none';
+            }
+            
+            // Don't touch Next button - it's controlled by selectOption
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                displayQuestion();
+                updateButtonVisibility();
+            } else {
+                if (currentSpouse === 1) {
+                    // Spouse 1 done, transition to Spouse 2
+                    document.getElementById('spouse1-name-display').textContent = spouse1Data.name;
+                    showScreen('transition-screen');
+                } else {
+                    // Both done, show results
+                    calculateAndShowResults();
+                }
+            }
+        }
+
+        function calculateAndShowResults() {
+            let score = 0;
+            let matches = [];
+            let mismatches = [];
+
+            // Calculate score
+            for (let i = 0; i < questions.length; i++) {
+                if (i === 9) { // Retirement question (index 9)
+                    // Special handling for retirement question
+                    if (spouse1Data.answers[i] === 2 && spouse2Data.answers[i] === 2) {
+                        score += 2; // Both financially independent
+                        matches.push(i);
+                    } else if (spouse1Data.answers[i] === spouse2Data.answers[i]) {
+                        matches.push(i);
+                        if (spouse1Data.answers[i] < 2) {
+                            // Both expecting support - aligned but show warning
+                        }
+                    } else {
+                        score -= 1;
+                        mismatches.push(i);
+                    }
+                } else {
+                    if (spouse1Data.answers[i] === spouse2Data.answers[i]) {
+                        score += 1;
+                        matches.push(i);
+                    } else {
+                        score -= 1;
+                        mismatches.push(i);
+                    }
+                }
+            }
+
+            // Display score
+            document.getElementById('final-score').textContent = score;
+            
+            // Score interpretation
+            let interpretation = '';
+            let ctaTitle = '';
+            let ctaSteps = [];
+
+            if (score >= 8) {
+                interpretation = "🌟 Excellent! You're highly in sync!";
+                ctaTitle = "You're Doing Great! Here's How to Stay on Track:";
+                ctaSteps = [
+                    "Schedule quarterly financial check-ins",
+                    "Consider advanced planning: estate planning, tax optimization",
+                    "Explore investment opportunities together",
+                    "Celebrate your financial wins!"
+                ];
+            } else if (score >= 4) {
+                interpretation = "👍 Good alignment, with room to improve!";
+                ctaTitle = "Let's Bridge Those Gaps:";
+                ctaSteps = [
+                    "Schedule monthly 'money dates' to discuss finances",
+                    "Review and align on your top 3 financial priorities",
+                    "Consider working with a financial advisor together",
+                    "Read a personal finance book together (e.g., 'The Total Money Makeover')"
+                ];
+            } else {
+                interpretation = "💬 Time for some important conversations!";
+                ctaTitle = "Start Your Financial Alignment Journey:";
+                ctaSteps = [
+                    "Set aside dedicated time quarterly (or at least annually) to review finances together",
+                    "Start with one area of disagreement and work through it together",
+                    "Consider couples financial coaching or counseling",
+                    "Take a financial literacy course together",
+                    "Remember: it's not about who's right, it's about finding common ground!"
+                ];
+            }
+
+            document.getElementById('score-interpretation').textContent = interpretation;
+
+            // Comparison bar
+            const scorePct = Math.round(((score + 10) / 20) * 100); // Convert -10 to +10 scale to 0-100%
+            document.getElementById('couple-names').textContent = 
+                `${spouse1Data.name} & ${spouse2Data.name}`;
+            document.getElementById('your-score-pct').textContent = scorePct + '%';
+            
+            setTimeout(() => {
+                document.getElementById('your-bar').style.width = scorePct + '%';
+                document.getElementById('your-bar').textContent = scorePct + '%';
+            }, 500);
+
+            // Breakdown
+            const breakdownEl = document.getElementById('breakdown');
+            breakdownEl.innerHTML = '<h3 style="font-family: \'Fredoka\', sans-serif; margin-bottom: 1rem;">📋 Question-by-Question Breakdown</h3>';
+            
+            questions.forEach((q, i) => {
+                const isMatch = matches.includes(i);
+                const itemEl = document.createElement('div');
+                itemEl.className = 'breakdown-item ' + (isMatch ? 'match' : 'mismatch');
+                itemEl.innerHTML = `
+                    <div>
+                        <strong>Q${i + 1}:</strong> ${q.text.substring(0, 50)}...
+                    </div>
+                    <div style="font-weight: 600;">
+                        ${isMatch ? '✓ Match' : '✗ Different'}
+                    </div>
+                `;
+                breakdownEl.appendChild(itemEl);
+            });
+
+            // Show reality check if retirement question was answered
+            if (spouse1Data.answers[9] !== undefined) {
+                document.getElementById('reality-check').style.display = 'block';
+            }
+
+            // CTA Section
+            const ctaEl = document.getElementById('cta-section');
+            ctaEl.innerHTML = `
+                <h3>${ctaTitle}</h3>
+                <ul class="next-steps">
+                    ${ctaSteps.map(step => `<li>${step}</li>`).join('')}
+                </ul>
+            `;
+
+            showScreen('results-screen');
+        }
+    </script>
+</body>
+</html>
